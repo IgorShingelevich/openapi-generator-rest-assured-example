@@ -1,9 +1,11 @@
 package com.viclovsky.example.oas.client.retrofit;
 
+import com.viclovsky.example.oas.client.PetstoreVerifier;
 import com.viclovsky.example.oas.client.retrofit2.ApiClient;
 import com.viclovsky.example.oas.client.retrofit2.api.StoreApi;
 import okhttp3.OkHttpClient;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -20,12 +22,19 @@ public class GetInventoryTest {
 
     private ApiClient api;
 
+    @BeforeClass
+    public static void verifyPetstoreUp() {
+        PetstoreVerifier.verifyReachable();
+    }
+
     @Before
     public void createApi() {
         final OkHttpClient client = new OkHttpClient().newBuilder().build();
         api = new ApiClient();
+        String baseUri = System.getProperty("api.baseUri", "http://127.0.0.1:80/v2");
+        if (!baseUri.endsWith("/")) baseUri += "/";
         Retrofit.Builder builder = new ApiClient().getAdapterBuilder()
-                .baseUrl("http://127.0.0.1:80/v2/");
+                .baseUrl(baseUri);
         api.setAdapterBuilder(builder).configureFromOkclient(client);
     }
 

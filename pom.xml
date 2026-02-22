@@ -39,6 +39,12 @@
         <!--assertj-core-->
         <assertj-core>3.6.2</assertj-core>
         <assertj-maven-plugin>2.1.0</assertj-maven-plugin>
+        <!-- Petstore (Docker) - must match ReqSpecFactory / docker run -->
+        <api.baseUri>http://127.0.0.1:80/v2</api.baseUri>
+        <petstore.image>swaggerapi/petstore</petstore.image>
+        <petstore.container.name>petstore</petstore.container.name>
+        <petstore.port>80</petstore.port>
+        <petstore.basePath>/v2</petstore.basePath>
     </properties>
 
     <build>

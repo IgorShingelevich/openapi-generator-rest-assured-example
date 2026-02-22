@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.greaterThan;
 
 @ExtendWith(GuiceExtension.class)
 @IncludeModule(ExampleApiModule.class)
-class GetInventoryTest {
+class GetInventoryTest extends BasePetstoreTest {
 
     @Inject
     private ApiClient api;

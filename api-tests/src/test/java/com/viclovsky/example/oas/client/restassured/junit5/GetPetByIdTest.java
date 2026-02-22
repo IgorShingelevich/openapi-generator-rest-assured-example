@@ -19,7 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(GuiceExtension.class)
 @IncludeModule(ExampleApiModule.class)
-class GetPetByIdTest {
+class GetPetByIdTest extends BasePetstoreTest {
 
     private static final String NOT_EXIST_ID = "-1";
 

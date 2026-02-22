@@ -19,11 +19,14 @@ public final class ReqSpecFactory {
     private ReqSpecFactory() {
     }
 
+    /** System property for base URI (e.g. from Maven Surefire or -Dapi.baseUri=...). */
+    public static final String PROP_API_BASE_URI = "api.baseUri";
+
     /**
-     * Creates a RequestSpecBuilder with default base URI and all standard filters.
+     * Creates a RequestSpecBuilder with base URI from system property {@value #PROP_API_BASE_URI} or default.
      */
     public static RequestSpecBuilder create() {
-        return create(DEFAULT_BASE_URI);
+        return create(System.getProperty(PROP_API_BASE_URI, DEFAULT_BASE_URI));
     }
 
     /**
