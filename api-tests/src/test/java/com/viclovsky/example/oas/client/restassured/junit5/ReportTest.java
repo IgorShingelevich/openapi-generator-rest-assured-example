@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.ServerSocket;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,11 +24,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class ReportTest {
 
-    private static final int ALLURE_PORT = 19292;
+    private static final int DEFAULT_ALLURE_PORT = 19292;
     private static final int SERVER_START_TIMEOUT_SEC = 30;
-    private static final String BASE_URL = "http://localhost:" + ALLURE_PORT;
 
     private Process allureProcess;
+    private int allurePort;
 
     @AfterEach
     void tearDown() {
@@ -41,20 +42,23 @@ class ReportTest {
         Path resultsDir = getAllureResultsDir();
         assertAllureResultsNotEmpty(resultsDir);
 
+        allurePort = choosePort();
         startAllureServe(resultsDir);
         waitForServerReady();
 
-        open(BASE_URL + "/#behaviors");
+        String baseUrl = "http://localhost:" + allurePort;
+        open(baseUrl + "/#behaviors");
 
         // First test link in the list (Behaviors table: links like "#N testName duration")
         $("a[href*='#behaviors/']").shouldBe(visible);
         $$("a[href*='#behaviors/']").first().click();
 
-        // Each API call must be wrapped in step "Вызов {method} to {endpoint}" with request+response inside
+        // Each API call must be wrapped in step "{ApiName} — {METHOD} {path}" with request+response inside
         String bodyText = $("body").getText();
-        assertThat(bodyText)
-                .as("Step 'Вызов ... to ...' must be present (each call wrapped in Allure step)")
-                .contains("Вызов");
+        boolean hasApiStep = bodyText.contains("PetApi") || bodyText.contains("StoreApi") || bodyText.contains("UserApi");
+        assertThat(hasApiStep)
+                .as("Step with API name (PetApi/StoreApi/UserApi) must be present for each call")
+                .isTrue();
         assertThat(bodyText)
                 .as("Request attachment must be inside the step")
                 .contains("Request");
@@ -80,13 +84,23 @@ class ReportTest {
                 "allure-results is empty. Run API tests first.");
     }
 
+    private static int choosePort() throws IOException {
+        Integer configured = Integer.getInteger("allure.report.port");
+        if (configured != null && configured > 0) {
+            return configured;
+        }
+        try (ServerSocket s = new ServerSocket(0)) {
+            return s.getLocalPort();
+        }
+    }
+
     private void startAllureServe(Path resultsDir) throws IOException {
         String path = resultsDir.toAbsolutePath().toString();
         ProcessBuilder pb;
         if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
-            pb = new ProcessBuilder("cmd", "/c", "allure", "serve", "--port", String.valueOf(ALLURE_PORT), path);
+            pb = new ProcessBuilder("cmd", "/c", "allure", "serve", "--port", String.valueOf(allurePort), path);
         } else {
-            pb = new ProcessBuilder("allure", "serve", "--port", String.valueOf(ALLURE_PORT), path);
+            pb = new ProcessBuilder("allure", "serve", "--port", String.valueOf(allurePort), path);
         }
         pb.redirectErrorStream(true);
         pb.inheritIO();
@@ -95,9 +109,10 @@ class ReportTest {
 
     private void waitForServerReady() throws InterruptedException {
         long deadline = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(SERVER_START_TIMEOUT_SEC);
+        String baseUrl = "http://localhost:" + allurePort;
         while (System.currentTimeMillis() < deadline) {
             try {
-                URL url = new URL(BASE_URL + "/");
+                URL url = new URL(baseUrl + "/");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setConnectTimeout(2000);
                 conn.setReadTimeout(2000);
