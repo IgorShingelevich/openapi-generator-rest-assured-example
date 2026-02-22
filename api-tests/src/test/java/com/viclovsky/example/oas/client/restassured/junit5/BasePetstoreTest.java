@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeAll;
 /**
  * Base for JUnit 5 API tests. Ensures Petstore is reachable and api.baseUri matches before any test runs.
  */
-abstract class BasePetstoreTest {
+public abstract class BasePetstoreTest {
 
     @BeforeAll
     static void verifyPetstoreUp() {
