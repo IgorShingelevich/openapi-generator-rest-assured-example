@@ -11,8 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import io.restassured.http.ContentType;
 
-import java.util.Collections;
-
 import static com.viclovsky.example.oas.client.restassured.ResponseSpecBuilders.shouldBeCode;
 import static com.viclovsky.example.oas.client.restassured.ResponseSpecBuilders.validatedWith;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
@@ -31,40 +29,28 @@ class PetApiTest extends BasePetstoreTest {
 
     @Test
     void shouldCreatePet() {
-        Pet body = new Pet()
-                .name("CRUD Test Pet")
-                .status(Pet.StatusEnum.AVAILABLE)
-                .photoUrls(Collections.singletonList("http://example.com/photo.jpg"));
-        Pet created = api.pet().addPet().reqSpec(r -> r.setContentType(ContentType.JSON)).body(body)
+        Pet created = api.pet().addPet().reqSpec(r -> r.setContentType(ContentType.JSON)).body(TestDataProvider.petForCreate())
                 .execute(validatedWith(shouldBeCode(SC_OK)))
                 .as(Pet.class);
         assertThat(created.getId()).isNotNull();
-        assertThat(created.getName()).isEqualTo("CRUD Test Pet");
+        assertThat(created.getName()).isEqualTo(TestDataProvider.petForCreate().getName());
     }
 
     @Test
     void shouldGetPetById() {
-        Pet body = new Pet()
-                .name("Read Test Pet")
-                .status(Pet.StatusEnum.PENDING)
-                .photoUrls(Collections.singletonList("http://example.com/read.jpg"));
-        long id = api.pet().addPet().reqSpec(r -> r.setContentType(ContentType.JSON)).body(body)
+        long id = api.pet().addPet().reqSpec(r -> r.setContentType(ContentType.JSON)).body(TestDataProvider.petForRead())
                 .execute(validatedWith(shouldBeCode(SC_OK)))
                 .jsonPath().getLong("id");
 
         Pet read = api.pet().getPetById().petIdPath(id)
                 .executeAs(validatedWith(shouldBeCode(SC_OK)));
         assertThat(read.getId()).isEqualTo(id);
-        assertThat(read.getName()).isEqualTo("Read Test Pet");
+        assertThat(read.getName()).isEqualTo(TestDataProvider.petForRead().getName());
     }
 
     @Test
     void shouldUpdatePet() {
-        Pet body = new Pet()
-                .name("Update Test Pet")
-                .status(Pet.StatusEnum.AVAILABLE)
-                .photoUrls(Collections.singletonList("http://example.com/update.jpg"));
-        Pet created = api.pet().addPet().reqSpec(r -> r.setContentType(ContentType.JSON)).body(body)
+        Pet created = api.pet().addPet().reqSpec(r -> r.setContentType(ContentType.JSON)).body(TestDataProvider.petForUpdate())
                 .execute(validatedWith(shouldBeCode(SC_OK)))
                 .as(Pet.class);
         created.name("Updated Name").status(Pet.StatusEnum.SOLD);
@@ -80,11 +66,7 @@ class PetApiTest extends BasePetstoreTest {
 
     @Test
     void shouldDeletePet() {
-        Pet body = new Pet()
-                .name("Delete Test Pet")
-                .status(Pet.StatusEnum.AVAILABLE)
-                .photoUrls(Collections.singletonList("http://example.com/delete.jpg"));
-        long id = api.pet().addPet().reqSpec(r -> r.setContentType(ContentType.JSON)).body(body)
+        long id = api.pet().addPet().reqSpec(r -> r.setContentType(ContentType.JSON)).body(TestDataProvider.petForDelete())
                 .execute(validatedWith(shouldBeCode(SC_OK)))
                 .jsonPath().getLong("id");
 

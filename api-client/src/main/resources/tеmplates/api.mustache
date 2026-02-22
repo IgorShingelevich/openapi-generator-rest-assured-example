@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import io.qameta.allure.Allure;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
@@ -171,7 +170,7 @@ public class {{classname}} {
  */
  @Override
  public <T> T execute(Function<Response, T> handler) {
- return Allure.step("{{classname}} — {{httpMethod}} {{{path}}}", () -> handler.apply(RestAssured.given().spec(reqSpec.build()).expect().spec(respSpec.build()).when().request(REQ_METHOD, REQ_URI)));
+ return handler.apply(RestAssured.given().spec(reqSpec.build()).expect().spec(respSpec.build()).when().request(REQ_METHOD, REQ_URI));
  }
  {{#returnType}}
 

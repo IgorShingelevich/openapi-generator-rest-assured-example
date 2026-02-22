@@ -3,7 +3,6 @@ package com.viclovsky.example.oas.client.restassured.api;
 import com.google.inject.Inject;
 import com.viclovsky.example.oas.client.restassured.ApiClient;
 import com.viclovsky.example.oas.client.restassured.model.Order;
-import com.viclovsky.example.oas.client.restassured.model.Pet;
 import com.viclovsky.example.oas.client.restassured.module.ExampleApiModule;
 import com.viclovsky.example.oas.client.restassured.junit5.BasePetstoreTest;
 import name.falgout.jeffrey.testing.junit5.GuiceExtension;
@@ -11,8 +10,6 @@ import name.falgout.jeffrey.testing.junit5.IncludeModule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import io.restassured.http.ContentType;
-
-import java.util.Collections;
 
 import static com.viclovsky.example.oas.client.restassured.ResponseSpecBuilders.shouldBeCode;
 import static com.viclovsky.example.oas.client.restassured.ResponseSpecBuilders.validatedWith;
@@ -31,11 +28,7 @@ class StoreApiTest extends BasePetstoreTest {
     private ApiClient api;
 
     private long createPetForOrder() {
-        Pet pet = new Pet()
-                .name("Store Test Pet")
-                .status(Pet.StatusEnum.AVAILABLE)
-                .photoUrls(Collections.singletonList("http://example.com/store.jpg"));
-        return api.pet().addPet().reqSpec(r -> r.setContentType(ContentType.JSON)).body(pet)
+        return api.pet().addPet().reqSpec(r -> r.setContentType(ContentType.JSON)).body(TestDataProvider.petForStoreOrder())
                 .execute(validatedWith(shouldBeCode(SC_OK)))
                 .jsonPath().getLong("id");
     }
@@ -43,11 +36,7 @@ class StoreApiTest extends BasePetstoreTest {
     @Test
     void shouldPlaceOrder() {
         long petId = createPetForOrder();
-        Order body = new Order()
-                .petId(petId)
-                .quantity(2)
-                .status(Order.StatusEnum.PLACED);
-        Order created = api.store().placeOrder().reqSpec(r -> r.setContentType(ContentType.JSON)).body(body)
+        Order created = api.store().placeOrder().reqSpec(r -> r.setContentType(ContentType.JSON)).body(TestDataProvider.orderPlaced(petId))
                 .executeAs(validatedWith(shouldBeCode(SC_OK)));
         assertThat(created.getId()).isNotNull();
         assertThat(created.getPetId()).isEqualTo(petId);
@@ -57,11 +46,7 @@ class StoreApiTest extends BasePetstoreTest {
     @Test
     void shouldGetOrderById() {
         long petId = createPetForOrder();
-        Order order = new Order()
-                .petId(petId)
-                .quantity(1)
-                .status(Order.StatusEnum.APPROVED);
-        long orderId = api.store().placeOrder().reqSpec(r -> r.setContentType(ContentType.JSON)).body(order)
+        long orderId = api.store().placeOrder().reqSpec(r -> r.setContentType(ContentType.JSON)).body(TestDataProvider.orderApproved(petId))
                 .execute(validatedWith(shouldBeCode(SC_OK)))
                 .jsonPath().getLong("id");
 
@@ -74,11 +59,7 @@ class StoreApiTest extends BasePetstoreTest {
     @Test
     void shouldDeleteOrder() {
         long petId = createPetForOrder();
-        Order order = new Order()
-                .petId(petId)
-                .quantity(1)
-                .status(Order.StatusEnum.PLACED);
-        long orderId = api.store().placeOrder().reqSpec(r -> r.setContentType(ContentType.JSON)).body(order)
+        long orderId = api.store().placeOrder().reqSpec(r -> r.setContentType(ContentType.JSON)).body(TestDataProvider.orderForDelete(petId))
                 .execute(validatedWith(shouldBeCode(SC_OK)))
                 .jsonPath().getLong("id");
 

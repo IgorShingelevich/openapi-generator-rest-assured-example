@@ -29,85 +29,47 @@ class UserApiTest extends BasePetstoreTest {
 
     @Test
     void shouldCreateUser() {
-        User body = new User()
-                .username("cruduser1")
-                .firstName("Crud")
-                .lastName("User")
-                .email("crud1@example.com")
-                .password("pass123")
-                .userStatus(0);
-        api.user().createUser().reqSpec(r -> r.setContentType(ContentType.JSON)).body(body)
+        User data = TestDataProvider.userForCreate();
+        api.user().createUser().reqSpec(r -> r.setContentType(ContentType.JSON)).body(data)
                 .execute(validatedWith(shouldBeCode(SC_OK)));
-        // Verify by read
-        User read = api.user().getUserByName().usernamePath("cruduser1")
+        User read = api.user().getUserByName().usernamePath(data.getUsername())
                 .executeAs(validatedWith(shouldBeCode(SC_OK)));
-        assertThat(read.getUsername()).isEqualTo("cruduser1");
-        assertThat(read.getFirstName()).isEqualTo("Crud");
+        assertThat(read.getUsername()).isEqualTo(data.getUsername());
+        assertThat(read.getFirstName()).isEqualTo(data.getFirstName());
     }
 
     @Test
     void shouldGetUserByName() {
-        User body = new User()
-                .username("readuser1")
-                .firstName("Read")
-                .lastName("User")
-                .email("read1@example.com")
-                .password("pass")
-                .userStatus(0);
-        api.user().createUser().reqSpec(r -> r.setContentType(ContentType.JSON)).body(body)
+        User data = TestDataProvider.userForRead();
+        api.user().createUser().reqSpec(r -> r.setContentType(ContentType.JSON)).body(data)
                 .execute(validatedWith(shouldBeCode(SC_OK)));
-
-        User read = api.user().getUserByName().usernamePath("readuser1")
+        User read = api.user().getUserByName().usernamePath(data.getUsername())
                 .executeAs(validatedWith(shouldBeCode(SC_OK)));
-        assertThat(read.getUsername()).isEqualTo("readuser1");
-        assertThat(read.getFirstName()).isEqualTo("Read");
+        assertThat(read.getUsername()).isEqualTo(data.getUsername());
+        assertThat(read.getFirstName()).isEqualTo(data.getFirstName());
     }
 
     @Test
     void shouldUpdateUser() {
-        User body = new User()
-                .username("updateuser1")
-                .firstName("Update")
-                .lastName("User")
-                .email("update1@example.com")
-                .password("pass")
-                .userStatus(0);
-        api.user().createUser().reqSpec(r -> r.setContentType(ContentType.JSON)).body(body)
+        User data = TestDataProvider.userForUpdate();
+        api.user().createUser().reqSpec(r -> r.setContentType(ContentType.JSON)).body(data)
                 .execute(validatedWith(shouldBeCode(SC_OK)));
-
-        User updatedBody = new User()
-                .username("updateuser1")
-                .firstName("UpdatedFirst")
-                .lastName("UpdatedLast")
-                .email("updated@example.com")
-                .password("newpass")
-                .userStatus(1);
-        api.user().updateUser().usernamePath("updateuser1").reqSpec(r -> r.setContentType(ContentType.JSON)).body(updatedBody)
+        api.user().updateUser().usernamePath(data.getUsername()).reqSpec(r -> r.setContentType(ContentType.JSON)).body(TestDataProvider.userForUpdateModified())
                 .execute(validatedWith(shouldBeCode(SC_OK)));
-
-        User read = api.user().getUserByName().usernamePath("updateuser1")
+        User read = api.user().getUserByName().usernamePath(data.getUsername())
                 .executeAs(validatedWith(shouldBeCode(SC_OK)));
-        assertThat(read.getUsername()).isEqualTo("updateuser1");
-        // Server may or may not persist all fields; at least verify user is still found after update
+        assertThat(read.getUsername()).isEqualTo(data.getUsername());
         assertThat(read.getFirstName()).isNotNull();
     }
 
     @Test
     void shouldDeleteUser() {
-        User body = new User()
-                .username("deleteuser1")
-                .firstName("Delete")
-                .lastName("User")
-                .email("delete1@example.com")
-                .password("pass")
-                .userStatus(0);
-        api.user().createUser().reqSpec(r -> r.setContentType(ContentType.JSON)).body(body)
+        User data = TestDataProvider.userForDelete();
+        api.user().createUser().reqSpec(r -> r.setContentType(ContentType.JSON)).body(data)
                 .execute(validatedWith(shouldBeCode(SC_OK)));
-
-        api.user().deleteUser().usernamePath("deleteuser1")
+        api.user().deleteUser().usernamePath(data.getUsername())
                 .execute(validatedWith(shouldBeCode(SC_OK)));
-
-        api.user().getUserByName().usernamePath("deleteuser1")
+        api.user().getUserByName().usernamePath(data.getUsername())
                 .execute(validatedWith(shouldBeCode(SC_NOT_FOUND)));
     }
 }
