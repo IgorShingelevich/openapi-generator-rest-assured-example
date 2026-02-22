@@ -29,7 +29,7 @@ public class GetInventoryTest {
                                 .objectMapperConfig(objectMapperConfig()
                                         .defaultObjectMapper(GsonObjectMapper.gson())))
                         .addFilter(new ErrorLoggingFilter())
-                        .setBaseUri("http://petstore.swagger.io:80/v2")));
+                        .setBaseUri("http://127.0.0.1:80/v2")));
     }
 
     @Test

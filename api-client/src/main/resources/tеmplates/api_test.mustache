@@ -7,15 +7,12 @@ package {{package}};
 import {{invokerPackage}}.ApiClient;
 import {{apiPackage}}.{{classname}};
 import com.google.inject.Inject;
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.filter.log.ErrorLoggingFilter;
-//import io.qameta.allure.Owner;
-//import io.qameta.allure.Description;
-import org.hamcrest.MatcherAssert;
+import io.qameta.allure.Description;
+import io.qameta.allure.Owner;
 import name.falgout.jeffrey.testing.junit5.GuiceExtension;
 import name.falgout.jeffrey.testing.junit5.IncludeModule;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import {{invokerPackage}}.module.ExampleApiModule;
 {{^fullJavaUtil}}
@@ -27,7 +24,7 @@ import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
 {{/fullJavaUtil}}
-import static {{invokerPackage}}.ResponseSpecBuilders.shouldBeCode;
+import static com.viclovsky.ResSpecFactory.shouldBeCode;
 import static {{invokerPackage}}.ResponseSpecBuilders.validatedWith;
 import static {{apiPackage}}.{{classname}}.*;
 
@@ -42,7 +39,6 @@ public class {{classname}}Test {
             /**
             * Generated API tests for all status codes {{operationIdCamelCase}}
             */
-            //@DisplayName("{{httpMethod}} {{path}}")
             @ExtendWith(GuiceExtension.class)
             @IncludeModule(ExampleApiModule.class)
             public static class {{operationIdCamelCase}}Test {
@@ -52,8 +48,8 @@ public class {{classname}}Test {
 
         {{#responses}}
                 @Test
-                //@Owner("generated")
-                //@Description("Check status code {{code}} and response for {{httpMethod}} {{path}} ({{message}})")
+                @Owner("api-tests")
+                @Description("{{httpMethod}} {{path}} - expect {{code}} ({{message}})")
                 public void shouldSee{{code}}{{operationIdCamelCase}}() {
             {{#allParams}}{{^isHeaderParam}}
                     //{{{dataType}}} {{paramName}} = {{example}};

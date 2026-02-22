@@ -24,7 +24,7 @@ public class SearchPet {
         final OkHttpClient client = new OkHttpClient().newBuilder().build();
         api = new ApiClient();
         Retrofit.Builder builder = new ApiClient().getAdapterBuilder()
-                .baseUrl("http://petstore.swagger.io:80/v2/");
+                .baseUrl("http://127.0.0.1:80/v2/");
         api.setAdapterBuilder(builder);
         api.configureFromOkclient(client);
     }
