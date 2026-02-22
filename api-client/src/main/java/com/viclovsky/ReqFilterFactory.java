@@ -7,7 +7,6 @@ import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,10 +20,12 @@ public final class ReqFilterFactory {
 
     /**
      * Returns the list of filters to apply to requests (order matters).
-     * Includes: Allure (request/response attachments), error logging, optional request/response logging.
+     * First: Allure step wrapper "Вызов {method} to {endpoint}" so each call and its attachments are in one step.
+     * Then: Allure (request/response attachments), error logging, optional request/response logging.
      */
     public static List<Filter> getFilters() {
         return Arrays.asList(
+                new AllureStepFilter(),
                 new AllureRestAssured(),
                 new ErrorLoggingFilter(),
                 new RequestLoggingFilter(),

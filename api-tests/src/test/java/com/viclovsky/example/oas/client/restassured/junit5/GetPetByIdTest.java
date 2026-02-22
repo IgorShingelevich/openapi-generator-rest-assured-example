@@ -14,8 +14,7 @@ import static com.viclovsky.example.oas.client.restassured.ResponseSpecBuilders.
 import static com.viclovsky.example.oas.client.restassured.ResponseSpecBuilders.validatedWith;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(GuiceExtension.class)
 @IncludeModule(ExampleApiModule.class)
@@ -33,7 +32,7 @@ class GetPetByIdTest extends BasePetstoreTest {
 
         Pet pet = api.pet().getPetById().petIdPath(id)
                 .executeAs(validatedWith(shouldBeCode(SC_OK)));
-        assertThat(pet.getId(), equalTo(id));
+        assertThat(pet.getId()).isEqualTo(id);
     }
 
     @Test
@@ -42,8 +41,8 @@ class GetPetByIdTest extends BasePetstoreTest {
                 .reqSpec(r -> r.addHeader("x-real-ip", "0:0:0:0:0:0:0:1"))
                 .execute(validatedWith(shouldBeCode(SC_NOT_FOUND)))
                 .as(ModelApiResponse.class);
-        assertThat(error.getCode(), equalTo(1));
-        assertThat(error.getType(), equalTo("error"));
-        assertThat(error.getMessage(), equalTo("Pet not found"));
+        assertThat(error.getCode()).isEqualTo(1);
+        assertThat(error.getType()).isEqualTo("error");
+        assertThat(error.getMessage()).isEqualTo("Pet not found");
     }
 }

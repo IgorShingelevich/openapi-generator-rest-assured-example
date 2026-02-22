@@ -5,7 +5,6 @@ import com.viclovsky.example.oas.client.restassured.ApiClient;
 import com.viclovsky.example.oas.client.restassured.module.ExampleApiModule;
 import name.falgout.jeffrey.testing.junit5.GuiceExtension;
 import name.falgout.jeffrey.testing.junit5.IncludeModule;
-import org.junit.Ignore;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -47,23 +47,6 @@
             <groupId>name.falgout.jeffrey.testing.junit5</groupId>
             <artifactId>guice-extension</artifactId>
         </dependency>
-        <!--retrofit2-->
-        <dependency>
-            <groupId>com.squareup.retrofit2</groupId>
-            <artifactId>converter-gson</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.squareup.retrofit2</groupId>
-            <artifactId>retrofit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.squareup.retrofit2</groupId>
-            <artifactId>converter-scalars</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.oltu.oauth2</groupId>
-            <artifactId>org.apache.oltu.oauth2.client</artifactId>
-        </dependency>
         <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-rest-assured</artifactId>
@@ -102,52 +85,6 @@
                             <templateDirectory>${project.basedir}/src/main/resources/tеmplates</templateDirectory>
                         </configuration>
                     </execution>
-                    <!--retrofit2 client example-->
-                    <execution>
-                        <id>retrofit2</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/oas.json</inputSpec>
-                            <output>${project.build.directory}/generated-sources/openapi-generator</output>
-                            <generatorName>java</generatorName>
-                            <configOptions>
-                                <dateLibrary>java8</dateLibrary>
-                            </configOptions>
-                            <library>retrofit2</library>
-                            <skipValidateSpec>true</skipValidateSpec>
-                            <skipIfSpecIsUnchanged>false</skipIfSpecIsUnchanged>
-                            <generateApiDocumentation>false</generateApiDocumentation>
-                            <generateModelDocumentation>false</generateModelDocumentation>
-                            <apiPackage>${default.package}.retrofit2.api</apiPackage>
-                            <modelPackage>${default.package}.retrofit2.model</modelPackage>
-                            <invokerPackage>${default.package}.retrofit2</invokerPackage>
-                        </configuration>
-                    </execution>
-                    <!--retrofit2 bad client example-->
-<!--                    <execution>-->
-<!--                        <id>retrofit2-bad</id>-->
-<!--                        <goals>-->
-<!--                            <goal>generate</goal>-->
-<!--                        </goals>-->
-<!--                        <configuration>-->
-<!--                            <inputSpec>${project.basedir}/src/main/resources/oas-bad.json</inputSpec>-->
-<!--                            <output>${project.build.directory}/generated-sources/openapi-generator</output>-->
-<!--                            <generatorName>java</generatorName>-->
-<!--                            <configOptions>-->
-<!--                                <dateLibrary>java8</dateLibrary>-->
-<!--                            </configOptions>-->
-<!--                            <library>retrofit2</library>-->
-<!--                            <skipValidateSpec>true</skipValidateSpec>-->
-<!--                            <skipIfSpecIsUnchanged>false</skipIfSpecIsUnchanged>-->
-<!--                            <generateApiDocumentation>false</generateApiDocumentation>-->
-<!--                            <generateModelDocumentation>false</generateModelDocumentation>-->
-<!--                            <apiPackage>${default.package}.v3.api</apiPackage>-->
-<!--                            <modelPackage>${default.package}.v3.model</modelPackage>-->
-<!--                            <invokerPackage>${default.package}.v3</invokerPackage>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
                 </executions>
             </plugin>
         </plugins>

@@ -70,12 +70,12 @@ See [openapi-generator-maven-plugin](https://github.com/OpenAPITools/openapi-gen
          <version>${jsr305-version}</version>
      </dependency>
 ```
-* Add necessary dependencies for 'templates' for tests:
+* Add necessary dependencies for tests (JUnit 5):
 ```xml
      <dependency>
-         <groupId>junit</groupId>
-         <artifactId>junit</artifactId>
-         <version>${junit.version}</version>
+         <groupId>org.junit.jupiter</groupId>
+         <artifactId>junit-jupiter-api</artifactId>
+         <version>${junit.jupiter.version}</version>
      </dependency>
 ```
 
@@ -83,6 +83,4 @@ See [openapi-generator-maven-plugin](https://github.com/OpenAPITools/openapi-gen
 
 * As soon as generated code has been placed in target (```/openapi-generator-rest-assured/api-client/target/generated-sources/openapi-generator/src/main```), you can use it for writing your tests. Moreover tests will be generated (```/openapi-generator-rest-assured/api-client/target/generated-sources/openapi-generator/src/test```).
 
-* The simplest test with junit4 looks like below (see [GetInventoryTest](https://github.com/viclovsky/openapi-generator-rest-assured/blob/master/api-tests/src/test/java/com/viclovsky/example/oas/client/restassured/junit4/GetInventoryTest.java))
-
-* Simple junit5 test with inject client was added for demonstration (see [GetInventoryTest](https://github.com/viclovsky/openapi-generator-rest-assured/blob/master/api-tests/src/test/java/com/viclovsky/example/oas/client/restassured/junit5/GetInventoryTest.java))
+* Simple JUnit 5 test with inject client was added for demonstration (see [GetInventoryTest](api-tests/src/test/java/com/viclovsky/example/oas/client/restassured/junit5/GetInventoryTest.java))
